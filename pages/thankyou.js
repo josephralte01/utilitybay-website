@@ -1,13 +1,20 @@
+import Head from 'next/head';
 import Link from 'next/link';
 
-export default function ThankYou() {
+export default function ThankYouPage() {
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>🎉 Thank you for your order!</h1>
-      <p>We’ll process it shortly. Track with your token if applicable.</p>
-      <p><em>(Optional account creation coming soon)</em></p>
-      <br />
-      <Link href="/">← Back to Home</Link>
-    </div>
+    <>
+      <Head>
+        <title>Thank You – UtilityBay</title>
+        <meta name="robots" content="noindex" />
+      </Head>
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>🎉 Thank You for Your Order!</h1>
+        <p>Your order has been received and is being processed.</p>
+        <Link href="/">
+          <a style={{ marginTop: '20px', display: 'inline-block' }}>← Go back to Home</a>
+        </Link>
+      </div>
+    </>
   );
 }

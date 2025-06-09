@@ -10,7 +10,7 @@ export default function Home() {
     axios
       .get(`${process.env.NEXT_PUBLIC_API_BASE}/api/products`)
       .then(res => setProducts(res.data))
-      .catch(err => console.error(err));
+      .catch(err => console.error('❌ Failed to fetch products:', err));
   }, []);
 
   return (
@@ -24,18 +24,38 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
+      {/* Cart shortcut */}
+      <div style={{ textAlign: 'right', padding: '1rem' }}>
+        <Link href="/checkout">
+          <a style={{
+            backgroundColor: '#111',
+            color: '#fff',
+            padding: '8px 16px',
+            borderRadius: '5px',
+            textDecoration: 'none'
+          }}>
+            🛒 Go to Cart
+          </a>
+        </Link>
+      </div>
+
+      {/* Product Display */}
       <div style={{ padding: '2rem' }}>
         <h1>🛒 UtilityBay</h1>
         <h2>Our Top Products</h2>
-        <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
           {products.map(product => (
-            <li key={product.id} style={{ marginBottom: '1.5rem' }}>
+            <li key={product.id} style={{
+              marginBottom: '1.5rem',
+              border: '1px solid #ccc',
+              borderRadius: '8px',
+              padding: '1rem'
+            }}>
               <Link href={`/product/${product.id}`}>
                 <a style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <div>
-                    <h3>{product.name}</h3>
-                    <p>₹{product.price}</p>
-                  </div>
+                  <h3>{product.name}</h3>
+                  <p>₹{product.price}</p>
                 </a>
               </Link>
             </li>

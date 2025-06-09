@@ -1,3 +1,4 @@
+// pages/checkout.js
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -11,11 +12,10 @@ export default function CheckoutPage() {
     phone: '',
     address: '',
     payment_method: 'cod',
-    coupon_code: '',
   });
-
+  const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
-  const [couponApplied, setCouponApplied] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -27,27 +27,22 @@ export default function CheckoutPage() {
 
   const applyCoupon = async () => {
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE}/api/coupons/apply`, {
-        code: form.coupon_code
-      });
-
-      setDiscount(res.data.discount_amount);
-      setCouponApplied(true);
-      alert('✅ Coupon applied!');
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE}/api/coupons/validate`, { code: couponCode });
+      setDiscount(res.data.discount || 0);
+      setError('');
     } catch (err) {
-      console.error('❌ Coupon failed:', err);
-      alert('Invalid coupon code.');
+      setError('Invalid coupon code');
+      setDiscount(0);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const orderData = {
       ...form,
       items: cart,
       total_amount: total,
-      guest_tracking_token: `GT-${Date.now()}`
+      guest_tracking_token: `GT-${Date.now()}`,
     };
 
     try {
@@ -97,20 +92,17 @@ export default function CheckoutPage() {
           <input
             type="text"
             placeholder="Coupon Code (optional)"
-            value={form.coupon_code}
-            onChange={(e) => setForm({ ...form, coupon_code: e.target.value })}
+            value={couponCode}
+            onChange={(e) => setCouponCode(e.target.value)}
           />
-          <button type="button" onClick={applyCoupon} disabled={couponApplied}>
-            🎟️ Apply Coupon
-          </button>
-          <br /><br />
+          <button type="button" onClick={applyCoupon}>Apply</button>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {discount > 0 && <p>✅ Coupon Applied! ₹{discount} off</p>}
 
           <p><strong>Payment Method:</strong> Cash on Delivery</p>
-          <p><strong>Subtotal:</strong> ₹{subtotal}</p>
-          <p><strong>Discount:</strong> ₹{discount}</p>
           <p><strong>Total:</strong> ₹{total}</p>
 
-          <button type="submit">✅ Place Order (₹{total})</button>
+          <button type="submit">✅ Place Order</button>
         </form>
       </div>
     </>

@@ -1,34 +1,48 @@
 // website/pages/cart.js
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
-  const router = useRouter();
 
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
-    setCart(storedCart);
+    const stored = JSON.parse(localStorage.getItem('cart') || '[]');
+    const withQuantity = stored.map(item => ({ ...item, quantity: item.quantity || 1 }));
+    setCart(withQuantity);
   }, []);
 
-  const removeItem = (id) => {
-    const updated = cart.filter(item => item.id !== id);
-    localStorage.setItem('cart', JSON.stringify(updated));
-    setCart(updated);
+  const updateCart = (updatedCart) => {
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
-
-  const goToCheckout = () => {
-    router.push('/checkout');
+  const increaseQty = (index) => {
+    const updated = [...cart];
+    updated[index].quantity += 1;
+    updateCart(updated);
   };
+
+  const decreaseQty = (index) => {
+    const updated = [...cart];
+    if (updated[index].quantity > 1) {
+      updated[index].quantity -= 1;
+      updateCart(updated);
+    }
+  };
+
+  const removeItem = (index) => {
+    const updated = cart.filter((_, i) => i !== index);
+    updateCart(updated);
+  };
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <>
       <Head>
-        <title>Your Cart – UtilityBay</title>
+        <title>🛒 Cart – UtilityBay</title>
+        <meta name="robots" content="noindex" />
       </Head>
 
       <div style={{ padding: '2rem' }}>
@@ -39,24 +53,35 @@ export default function CartPage() {
         ) : (
           <>
             <ul style={{ listStyle: 'none', padding: 0 }}>
-              {cart.map(item => (
-                <li key={item.id} style={{ borderBottom: '1px solid #ccc', marginBottom: '1rem' }}>
+              {cart.map((item, index) => (
+                <li key={index} style={{ borderBottom: '1px solid #ccc', paddingBottom: '1rem', marginBottom: '1rem' }}>
                   <h3>{item.name}</h3>
-                  <p>₹{item.price}</p>
-                  <button onClick={() => removeItem(item.id)}>❌ Remove</button>
+                  <p>Price: ₹{item.price}</p>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <button onClick={() => decreaseQty(index)}>-</button>
+                    <span style={{ margin: '0 10px' }}>{item.quantity}</span>
+                    <button onClick={() => increaseQty(index)}>+</button>
+                    <button onClick={() => removeItem(index)} style={{ marginLeft: '1rem', color: 'red' }}>❌ Remove</button>
+                  </div>
                 </li>
               ))}
             </ul>
 
-            <h3>Total: ₹{total}</h3>
-            <button onClick={goToCheckout}>✅ Proceed to Checkout</button>
+            <h2>Total: ₹{total}</h2>
+
+            <Link href="/checkout">
+              <a style={{
+                backgroundColor: '#111',
+                color: '#fff',
+                padding: '10px 20px',
+                borderRadius: '6px',
+                textDecoration: 'none'
+              }}>
+                ✅ Go to Checkout
+              </a>
+            </Link>
           </>
         )}
-
-        <br /><br />
-        <Link href="/">
-          <a>← Back to Home</a>
-        </Link>
       </div>
     </>
   );

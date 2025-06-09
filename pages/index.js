@@ -1,4 +1,3 @@
-// website/pages/index.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
@@ -25,22 +24,14 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
-      {/* 🛒 Go to Cart Shortcut */}
+      {/* Cart shortcut */}
       <div style={{ textAlign: 'right', padding: '1rem' }}>
         <Link href="/checkout">
-          <a style={{
-            backgroundColor: '#111',
-            color: '#fff',
-            padding: '8px 16px',
-            borderRadius: '5px',
-            textDecoration: 'none'
-          }}>
-            🛒 Go to Cart
-          </a>
+          🛒 Go to Cart
         </Link>
       </div>
 
-      {/* 🧾 Product Listings */}
+      {/* Product Display */}
       <div style={{ padding: '2rem' }}>
         <h1>🛒 UtilityBay</h1>
         <h2>Our Top Products</h2>
@@ -54,10 +45,10 @@ export default function Home() {
               padding: '1rem'
             }}>
               <Link href={`/product/${product.id}`}>
-                <a style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div>
                   <h3>{product.name}</h3>
                   <p>₹{product.price}</p>
-                </a>
+                </div>
               </Link>
             </li>
           ))}

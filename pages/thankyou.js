@@ -1,41 +1,34 @@
-// website/pages/thankyou.js
-import { useRouter } from 'next/router';
+// pages/thankyou.js
+import Head from 'next/head';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
-export default function ThankYouPage() {
-  const router = useRouter();
-  const { order_id, tracking_token } = router.query;
-  const [redirecting, setRedirecting] = useState(false);
-
-  useEffect(() => {
-    if (!order_id) {
-      setRedirecting(true);
-      setTimeout(() => router.push('/'), 3000);
-    }
-  }, [order_id]);
-
-  if (redirecting) {
-    return <p>Redirecting you to homepage...</p>;
-  }
-
+export default function ThankYou() {
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>🎉 Thank you for your order!</h1>
-      <p>Your Order ID: <strong>{order_id}</strong></p>
-      <p>Use this token to track: <code>{tracking_token}</code></p>
-      <p>We’ll process your order shortly.</p>
-      <Link href="/">
-        <a style={{
-          marginTop: '20px',
-          display: 'inline-block',
-          padding: '10px 20px',
-          backgroundColor: '#000',
-          color: '#fff',
-          borderRadius: '5px',
-          textDecoration: 'none'
-        }}>← Back to Home</a>
-      </Link>
-    </div>
+    <>
+      <Head>
+        <title>🎉 Thank You – UtilityBay</title>
+        <meta name="robots" content="noindex" />
+      </Head>
+
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>🎉 Thank You for Your Order!</h1>
+        <p>Your order is being processed.</p>
+        <p>You’ll receive a confirmation shortly.</p>
+
+        <Link href="/">
+          <button style={{
+            marginTop: '20px',
+            padding: '10px 20px',
+            backgroundColor: '#111',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer'
+          }}>
+            ← Back to Home
+          </button>
+        </Link>
+      </div>
+    </>
   );
 }

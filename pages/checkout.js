@@ -23,21 +23,26 @@ export default function CheckoutPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const token = `GT-${Date.now()}`;
+
     const orderData = {
       ...form,
       items: cart,
       total_amount: total,
-      guest_tracking_token: `GT-${Date.now()}`,
+      guest_tracking_token: token,
     };
 
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_BASE}/api/orders`, orderData);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE}/api/orders`,
+        orderData
+      );
 
-      // Clear cart
       localStorage.removeItem('cart');
 
-      // Redirect to Thank You page
-      router.push('/thankyou');
+      router.push(
+        `/thankyou?order_id=${response.data.order_id}&tracking_token=${token}`
+      );
     } catch (err) {
       console.error('❌ Order failed:', err);
       alert('Something went wrong while placing your order.');

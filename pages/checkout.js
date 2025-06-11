@@ -1,4 +1,3 @@
-// pages/checkout.js
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -22,7 +21,7 @@ export default function CheckoutPage() {
     setCart(stored);
   }, []);
 
-  const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal - discount;
 
   const applyCoupon = async () => {
@@ -30,7 +29,7 @@ export default function CheckoutPage() {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE}/api/coupons/validate`, { code: couponCode });
       setDiscount(res.data.discount || 0);
       setError('');
-    } catch (err) {
+    } catch {
       setError('Invalid coupon code');
       setDiscount(0);
     }
@@ -62,17 +61,18 @@ export default function CheckoutPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <div style={{ padding: '2rem' }}>
-        <h1>🧾 Checkout</h1>
+      <main className="max-w-2xl mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-6">🧾 Checkout</h1>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             placeholder="Your Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
-          /><br />
+            className="w-full p-2 border rounded"
+          />
 
           <input
             type="tel"
@@ -80,31 +80,41 @@ export default function CheckoutPage() {
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             required
-          /><br />
+            className="w-full p-2 border rounded"
+          />
 
           <textarea
             placeholder="Shipping Address"
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
             required
-          /><br />
-
-          <input
-            type="text"
-            placeholder="Coupon Code (optional)"
-            value={couponCode}
-            onChange={(e) => setCouponCode(e.target.value)}
+            className="w-full p-2 border rounded"
           />
-          <button type="button" onClick={applyCoupon}>Apply</button>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          {discount > 0 && <p>✅ Coupon Applied! ₹{discount} off</p>}
 
-          <p><strong>Payment Method:</strong> Cash on Delivery</p>
-          <p><strong>Total:</strong> ₹{total}</p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Coupon Code"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+              className="flex-grow p-2 border rounded"
+            />
+            <button type="button" onClick={applyCoupon} className="bg-blue-600 text-white px-4 py-2 rounded">
+              Apply
+            </button>
+          </div>
 
-          <button type="submit">✅ Place Order</button>
+          {error && <p className="text-red-600">{error}</p>}
+          {discount > 0 && <p className="text-green-600">✅ Coupon Applied! ₹{discount} off</p>}
+
+          <p className="mt-2">💵 <strong>Payment Method:</strong> Cash on Delivery</p>
+          <p className="text-xl font-semibold">Total: ₹{total}</p>
+
+          <button type="submit" className="bg-primary text-white px-6 py-3 rounded hover:bg-purple-900">
+            ✅ Place Order
+          </button>
         </form>
-      </div>
+      </main>
     </>
   );
 }

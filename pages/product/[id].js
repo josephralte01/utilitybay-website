@@ -6,7 +6,6 @@ import Head from 'next/head';
 export default function ProductDetail() {
   const router = useRouter();
   const { id } = router.query;
-
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
@@ -17,7 +16,7 @@ export default function ProductDetail() {
           const match = res.data.find(p => p._id === id);
           setProduct(match);
         })
-        .catch(err => console.error('Failed to load product:', err));
+        .catch(err => console.error('❌ Failed to load product:', err));
     }
   }, [id]);
 
@@ -29,36 +28,36 @@ export default function ProductDetail() {
     router.push('/cart');
   };
 
-  if (!product) return <p>Loading...</p>;
+  if (!product) return <p className="p-6">Loading...</p>;
 
   return (
     <>
       <Head>
         <title>{product.name} – UtilityBay</title>
       </Head>
-      <div style={{ padding: '2rem' }}>
-        <h1>{product.name}</h1>
-        <p>Price: ₹{product.price}</p>
-        <p>In Stock: {product.stockQty}</p>
+
+      <main className="max-w-2xl mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-2 text-primary">{product.name}</h1>
+        <p className="text-xl font-semibold text-gray-800 mb-1">₹{product.price}</p>
 
         {product.stockQty > 0 ? (
-          <button
-            onClick={addToCart}
-            style={{
-              padding: '10px 20px',
-              background: '#222',
-              color: '#fff',
-              borderRadius: '5px',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            ➕ Add to Cart
-          </button>
+          <p className="text-green-600 font-medium mb-4">✅ In Stock: {product.stockQty}</p>
         ) : (
-          <p style={{ color: 'red', fontWeight: 'bold' }}>❌ Out of Stock</p>
+          <p className="text-red-600 font-semibold mb-4">❌ Out of Stock</p>
         )}
-      </div>
+
+        <button
+          onClick={addToCart}
+          disabled={product.stockQty === 0}
+          className={`px-6 py-3 rounded-md font-semibold transition ${
+            product.stockQty > 0
+              ? 'bg-primary text-white hover:bg-purple-900'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          ➕ Add to Cart
+        </button>
+      </main>
     </>
   );
 }

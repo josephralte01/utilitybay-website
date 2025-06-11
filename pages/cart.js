@@ -66,51 +66,47 @@ export default function CartPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <div style={{ padding: '2rem' }}>
-        <h1>🛒 Your Cart</h1>
+      <main className="p-6 max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold mb-4">🛒 Your Cart</h1>
 
         {cart.length === 0 ? (
           <p>Your cart is empty.</p>
         ) : (
           <>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
+            <ul className="space-y-4">
               {cart.map((item, index) => (
-                <li key={index} style={{ borderBottom: '1px solid #ccc', paddingBottom: '1rem', marginBottom: '1rem' }}>
-                  <h3>{item.name}</h3>
-                  <p>Price: ₹{item.price}</p>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <button onClick={() => decreaseQty(index)}>-</button>
-                    <span style={{ margin: '0 10px' }}>{item.quantity}</span>
-                    <button onClick={() => increaseQty(index)}>+</button>
-                    <button onClick={() => removeItem(index)} style={{ marginLeft: '1rem', color: 'red' }}>❌ Remove</button>
+                <li key={index} className="border p-4 rounded-lg shadow-sm">
+                  <h3 className="text-lg font-semibold">{item.name}</h3>
+                  <p className="text-gray-600">₹{item.price}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <button onClick={() => decreaseQty(index)} className="px-2 py-1 bg-gray-200 rounded">−</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => increaseQty(index)} className="px-2 py-1 bg-gray-200 rounded">+</button>
+                    <button onClick={() => removeItem(index)} className="ml-4 text-red-600">❌ Remove</button>
                   </div>
                   {invalidItems.find(inv => inv._id === item._id) && (
-                    <p style={{ color: 'red', fontWeight: 'bold' }}>⚠️ Not enough stock</p>
+                    <p className="text-red-500 font-medium mt-2">⚠️ Not enough stock</p>
                   )}
                 </li>
               ))}
             </ul>
 
-            <h2>Total: ₹{total}</h2>
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold">Total: ₹{total}</h2>
+            </div>
 
             {invalidItems.length > 0 ? (
-              <p style={{ color: 'red' }}>⚠️ Please remove or reduce quantity of out-of-stock items to proceed.</p>
+              <p className="text-red-600 mt-4">⚠️ Please fix out-of-stock items to proceed.</p>
             ) : (
               <Link href="/checkout">
-                <a style={{
-                  backgroundColor: '#111',
-                  color: '#fff',
-                  padding: '10px 20px',
-                  borderRadius: '6px',
-                  textDecoration: 'none'
-                }}>
+                <span className="inline-block mt-6 bg-primary text-white px-6 py-3 rounded hover:bg-purple-900 cursor-pointer">
                   ✅ Go to Checkout
-                </a>
+                </span>
               </Link>
             )}
           </>
         )}
-      </div>
+      </main>
     </>
   );
 }

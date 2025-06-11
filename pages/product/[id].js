@@ -1,4 +1,3 @@
-// pages/product/[id].js
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -15,7 +14,7 @@ export default function ProductDetail() {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE}/api/products`)
         .then(res => {
-          const match = res.data.find(p => p.id === parseInt(id));
+          const match = res.data.find(p => p._id === id);
           setProduct(match);
         })
         .catch(err => console.error('Failed to load product:', err));
@@ -27,7 +26,7 @@ export default function ProductDetail() {
     const updatedCart = [...existingCart, product];
     localStorage.setItem('cart', JSON.stringify(updatedCart));
     alert('✅ Product added to cart!');
-    router.push('/cart'); // Optional: redirect to cart
+    router.push('/cart');
   };
 
   if (!product) return <p>Loading...</p>;
@@ -40,20 +39,25 @@ export default function ProductDetail() {
       <div style={{ padding: '2rem' }}>
         <h1>{product.name}</h1>
         <p>Price: ₹{product.price}</p>
+        <p>In Stock: {product.stockQty}</p>
 
-        <button
-          onClick={addToCart}
-          style={{
-            padding: '10px 20px',
-            background: '#222',
-            color: '#fff',
-            borderRadius: '5px',
-            border: 'none',
-            cursor: 'pointer'
-          }}
-        >
-          ➕ Add to Cart
-        </button>
+        {product.stockQty > 0 ? (
+          <button
+            onClick={addToCart}
+            style={{
+              padding: '10px 20px',
+              background: '#222',
+              color: '#fff',
+              borderRadius: '5px',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            ➕ Add to Cart
+          </button>
+        ) : (
+          <p style={{ color: 'red', fontWeight: 'bold' }}>❌ Out of Stock</p>
+        )}
       </div>
     </>
   );

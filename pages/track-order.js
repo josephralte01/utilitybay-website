@@ -1,4 +1,3 @@
-// pages/track-order.js
 import { useState } from 'react';
 import axios from 'axios';
 import Head from 'next/head';
@@ -25,36 +24,48 @@ export default function TrackOrder() {
         <title>Track Your Order – UtilityBay</title>
       </Head>
 
-      <div style={{ padding: '2rem' }}>
-        <h1>🔍 Track Your Order</h1>
+      <main className="max-w-2xl mx-auto px-4 py-10">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">🔍 Track Your Order</h1>
 
-        <input
-          type="text"
-          placeholder="Enter tracking token"
-          value={token}
-          onChange={(e) => setToken(e.target.value)}
-          style={{ padding: '8px', width: '300px', marginRight: '10px' }}
-        />
-        <button onClick={handleTrack}>📦 Track</button>
+        <div className="flex flex-col sm:flex-row gap-2 mb-6">
+          <input
+            type="text"
+            placeholder="Enter tracking token"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            className="flex-1 px-4 py-2 border rounded shadow-sm focus:ring-primary focus:border-primary"
+          />
+          <button
+            onClick={handleTrack}
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-opacity-90 transition"
+          >
+            📦 Track
+          </button>
+        </div>
 
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && (
+          <p className="text-red-600 text-sm font-medium mb-4">{error}</p>
+        )}
 
         {order && (
-          <div style={{ marginTop: '2rem' }}>
-            <h2>📦 Order Details</h2>
+          <div className="bg-white border rounded-lg shadow-md p-6 space-y-3">
+            <h2 className="text-xl font-semibold mb-2">📦 Order Details</h2>
             <p><strong>Order ID:</strong> {order.order_id}</p>
             <p><strong>Name:</strong> {order.name}</p>
             <p><strong>Total Amount:</strong> ₹{order.total_amount}</p>
-            <p><strong>Status:</strong> {order.status}</p>
-            <h3>🛒 Items:</h3>
-            <ul>
+            <p><strong>Status:</strong> <span className="font-medium capitalize">{order.status}</span></p>
+
+            <h3 className="mt-4 font-semibold">🛒 Items:</h3>
+            <ul className="list-disc list-inside">
               {order.items.map((item, i) => (
-                <li key={i}>{item.name} — ₹{item.price}</li>
+                <li key={i}>
+                  {item.name} — ₹{item.price} × {item.quantity || 1}
+                </li>
               ))}
             </ul>
           </div>
         )}
-      </div>
+      </main>
     </>
   );
 }

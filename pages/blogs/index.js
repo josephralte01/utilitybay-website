@@ -1,4 +1,3 @@
-// website/pages/blogs/index.js
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -27,12 +26,14 @@ export default function BlogList() {
         ) : (
           <ul style={{ listStyleType: 'none', padding: 0 }}>
             {blogs.map(blog => (
-              <li key={blog.id} style={{ marginBottom: '1.5rem' }}>
-                <Link href={`/blogs/${blog.id}`}>
+              <li key={blog._id} style={{ marginBottom: '2rem' }}>
+                <Link href={`/blogs/${blog._id}`}>
                   <h3 style={{ marginBottom: 0 }}>{blog.title}</h3>
                 </Link>
                 <p style={{ fontSize: '0.9rem', color: '#555' }}>
-                  ✍️ {blog.author} • 📅 {new Date(blog.created_at).toLocaleDateString()}
+                  ✍️ {blog.author} • 📅 {new Date(blog.createdAt).toLocaleDateString()}<br />
+                  📁 <em>{blog.category || 'Uncategorized'}</em> <br />
+                  🏷️ {blog.tags?.join(', ') || 'No tags'}
                 </p>
               </li>
             ))}

@@ -1,4 +1,3 @@
-// website/pages/blogs/[id].js
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
@@ -23,12 +22,15 @@ export default function BlogPost() {
     <>
       <Head>
         <title>{blog.title} – UtilityBay</title>
+        <meta name="description" content={blog.content.slice(0, 150)} />
       </Head>
 
       <div style={{ padding: '2rem' }}>
         <h1>{blog.title}</h1>
         <p style={{ fontSize: '0.9rem', color: '#777' }}>
-          ✍️ {blog.author} • 📅 {new Date(blog.created_at).toLocaleDateString()}
+          ✍️ {blog.author} • 📅 {new Date(blog.createdAt).toLocaleDateString()}<br />
+          📁 <strong>{blog.category || 'Uncategorized'}</strong><br />
+          🏷️ {blog.tags?.join(', ') || 'No tags'}
         </p>
         <div style={{ marginTop: '1rem' }}>
           <p>{blog.content}</p>
